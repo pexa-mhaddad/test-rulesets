@@ -15,5 +15,5 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-      - name: Build with Gradle
-        run: cd kotlin && ./gradlew build
+      - name: Validate with Maven
+        run: cd kotlin && mvn -B compile

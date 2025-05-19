@@ -12,7 +12,7 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 5
     
-  - package-ecosystem: "gradle"
+  - package-ecosystem: "maven"
     directory: "/kotlin"
     schedule:
       interval: "weekly"
