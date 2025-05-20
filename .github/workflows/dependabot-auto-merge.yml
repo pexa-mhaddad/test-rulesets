@@ -24,7 +24,6 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       
       - name: Enable auto-merge for Dependabot PRs
-        if: ${{ github.event_name == 'workflow_call' }}
         run: gh pr merge --auto --merge "$PR_URL"
         env:
           PR_URL: ${{ inputs.pr_url || github.event.pull_request.html_url }}
