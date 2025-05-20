@@ -8,7 +8,7 @@ on:
             - 'reopened'
             - 'labeled'
         branches:
-            - 'dependabot/**'
+            - 'main'
         paths:
             - 'kotlin/**'
             - 'npm/**'
