@@ -73,6 +73,13 @@ jobs:
             (contains(github.event.pull_request.labels.*.name, 'javascript') ||
             contains(github.event.pull_request.labels.*.name, 'java') ||
             contains(github.event.pull_request.labels.*.name, 'terraform'))
-        uses: ./.github/workflows/dependabot-auto-merge.yml
-        with:
-            pr_url: ${{github.event.pull_request.html_url}}
+        runs-on: ubuntu-latest
+        steps:
+            - name: Enable auto-merge
+              run: |
+                  echo "Auto-merge enabled for the PR."
+            - name: Merge PR
+              run: |
+                  echo "Merging PR..."
+                  gh pr merge ${{ github.event.pull_request.number }} --merge
+                  echo "PR merged."
