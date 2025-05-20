@@ -1,9 +1,10 @@
 name: Terraform Check
 
 on:
-  pull_request:
+  workflow_dispatch:
     paths:
       - 'terraform/**'
+  workflow_call:
 
 jobs:
   terraform-validate:

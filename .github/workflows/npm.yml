@@ -1,9 +1,10 @@
 name: NPM Check
 
 on:
-  pull_request:
+  workflow_dispatch:
     paths:
       - 'npm/**'
+  workflow_call:
 
 jobs:
   npm-validate:

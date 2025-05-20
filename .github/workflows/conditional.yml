@@ -1,0 +1,49 @@
+name: Conditional Dependabot Auto-merge
+
+on:
+    pull_request:
+        types:
+            - 'opened'
+            - 'synchronize'
+            - 'reopened'
+            - 'labeled'
+        branches:
+            - 'dependabot/**'
+        paths:
+            - 'kotlin/**'
+            - 'npm/**'
+            - 'terraform/**'
+
+permissions:
+    pull-requests: write
+    contents: write
+
+jobs:
+    auto_merge_npm:
+        if: | 
+            github.actor == 'dependabot[bot]' && 
+            contains(github.event.pull_request.labels.*.name, 'javascript')
+        uses: ./.github/workflows/npm.yml
+        
+    auto_merge_kotlin:
+        if: | 
+            github.actor == 'dependabot[bot]' && 
+            contains(github.event.pull_request.labels.*.name, 'java')
+        uses: ./.github/workflows/kotlin.yml
+
+    auto_merge_terraform:
+        if: | 
+            github.actor == 'dependabot[bot]' && 
+            contains(github.event.pull_request.labels.*.name, 'terraform')
+        uses: ./.github/workflows/terraform.yml
+            
+    enable_automerge:
+        needs: [auto_merge_npm, auto_merge_kotlin, auto_merge_terraform]
+        if: |
+            github.actor == 'dependabot[bot]' && 
+            (contains(github.event.pull_request.labels.*.name, 'javascript') || 
+             contains(github.event.pull_request.labels.*.name, 'java') || 
+             contains(github.event.pull_request.labels.*.name, 'terraform'))
+        uses: ./.github/workflows/dependabot-auto-merge.yml
+        with:
+            pr_url: ${{github.event.pull_request.html_url}}
