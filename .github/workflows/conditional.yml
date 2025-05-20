@@ -3,47 +3,76 @@ name: Conditional Dependabot Auto-merge
 on:
     pull_request:
         types:
-            - 'opened'
-            - 'synchronize'
-            - 'reopened'
-            - 'labeled'
+            - "opened"
+            - "synchronize"
+            - "reopened"
+            - "labeled"
         branches:
-            - 'main'
+            - "main"
         paths:
-            - 'kotlin/**'
-            - 'npm/**'
-            - 'terraform/**'
+            - "kotlin/**"
+            - "npm/**"
+            - "terraform/**"
 
 permissions:
     pull-requests: write
     contents: write
 
 jobs:
+    print_labels:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Print labels
+              run: |
+                  echo "Labels: ${{ toJson(github.event.pull_request.labels.*.name) }}"
+                  echo "Actor: ${{ github.actor }}"
+                  echo "Event Name: ${{ github.event_name }}"
+
+            - name: Check for dependabot
+              run: |
+                  if [[ "${{ github.actor }}" == "dependabot[bot]" ]]; then
+                      echo "This is a dependabot PR."
+                  else
+                      echo "This is not a dependabot PR."
+                  fi
+            - name: Check for auto-merge
+              run: |
+                  labels='${{ toJson(github.event.pull_request.labels.*.name) }}'
+                  if [[ "${{ github.actor }}" == "dependabot[bot]" ]]; then
+                      if echo "$labels" | jq -r 'any(.[]; . == "javascript" or . == "java" or . == "terraform")' | grep -q true; then
+                          echo "Auto-merge is enabled."
+                      else
+                          echo "Auto-merge is not enabled."
+                      fi
+                  else
+                      echo "Auto-merge is not enabled."
+                  fi
     auto_merge_npm:
-        if: | 
+        if: |
             github.actor == 'dependabot[bot]' && 
             contains(github.event.pull_request.labels.*.name, 'javascript')
         uses: ./.github/workflows/npm.yml
-        
+
     auto_merge_kotlin:
-        if: | 
+        if: |
             github.actor == 'dependabot[bot]' && 
             contains(github.event.pull_request.labels.*.name, 'java')
         uses: ./.github/workflows/kotlin.yml
 
     auto_merge_terraform:
-        if: | 
+        if: |
             github.actor == 'dependabot[bot]' && 
             contains(github.event.pull_request.labels.*.name, 'terraform')
         uses: ./.github/workflows/terraform.yml
-            
+
     enable_automerge:
         needs: [auto_merge_npm, auto_merge_kotlin, auto_merge_terraform]
         if: |
+            always() &&
             github.actor == 'dependabot[bot]' && 
-            (contains(github.event.pull_request.labels.*.name, 'javascript') || 
-             contains(github.event.pull_request.labels.*.name, 'java') || 
-             contains(github.event.pull_request.labels.*.name, 'terraform'))
+            (contains(github.event.pull_request.labels.*.name, 'javascript') ||
+            contains(github.event.pull_request.labels.*.name, 'java') ||
+            contains(github.event.pull_request.labels.*.name, 'terraform'))
         uses: ./.github/workflows/dependabot-auto-merge.yml
         with:
             pr_url: ${{github.event.pull_request.html_url}}
