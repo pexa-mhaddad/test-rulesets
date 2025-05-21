@@ -4,8 +4,8 @@
   "description": "Test package for GitHub rulesets",
   "main": "index.js",
   "dependencies": {
-    "clean-stack": "^5.1.0",
-    "lodash": "^4.15.0",
+    "clean-stack": "5.1.0",
+    "lodash": "4.15.0",
     "react": "^19.1.0"
   }
 }
