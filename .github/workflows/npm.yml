@@ -18,3 +18,7 @@ jobs:
         run: cd npm && npm install
       - name: Validate package
         run: cd npm && node -e "require('./index.js')"
+      - name: Intentionally fail
+        run: |
+          echo "This is an intentionally failing step."
+          exit 1
