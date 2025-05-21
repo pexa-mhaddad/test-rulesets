@@ -68,11 +68,13 @@ jobs:
     enable_automerge:
         needs: [auto_merge_npm, auto_merge_kotlin, auto_merge_terraform]
         if: |
-            always() &&
             github.actor == 'dependabot[bot]' && 
             (contains(github.event.pull_request.labels.*.name, 'javascript') ||
             contains(github.event.pull_request.labels.*.name, 'java') ||
-            contains(github.event.pull_request.labels.*.name, 'terraform'))
+            contains(github.event.pull_request.labels.*.name, 'terraform')) &&
+            (needs.auto_merge_npm.result == 'success' || needs.auto_merge_npm.result == 'skipped') &&
+            (needs.auto_merge_kotlin.result == 'success' || needs.auto_merge_kotlin.result == 'skipped') &&
+            (needs.auto_merge_terraform.result == 'success' || needs.auto_merge_terraform.result == 'skipped')
         runs-on: ubuntu-latest
         steps:
             - name: Enable auto-merge
