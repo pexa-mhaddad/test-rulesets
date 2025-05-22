@@ -2,12 +2,11 @@ name: Kotlin Check
 
 on:
   workflow_dispatch:
-    paths:
-      - 'kotlin/**'
   workflow_call:
 
 jobs:
-  kotlin-validate:
+  auto_merge_kotlin:
+    name: auto_merge_kotlin
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

@@ -2,12 +2,11 @@ name: NPM Check
 
 on:
   workflow_dispatch:
-    paths:
-      - 'npm/**'
   workflow_call:
 
 jobs:
   npm-validate:
+    name: auto_merge_npm
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,7 +17,3 @@ jobs:
         run: cd npm && npm install
       - name: Validate package
         run: cd npm && node -e "require('./index.js')"
-      - name: Intentionally fail
-        run: |
-          echo "This is an intentionally failing step."
-          exit 1
