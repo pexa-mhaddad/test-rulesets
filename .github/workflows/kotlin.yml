@@ -5,7 +5,7 @@ on:
   workflow_call:
 
 jobs:
-  auto_merge_kotlin:
+  kotlin-validate:
     name: auto_merge_kotlin
     runs-on: ubuntu-latest
     steps:
